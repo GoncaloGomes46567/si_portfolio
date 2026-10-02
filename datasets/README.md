@@ -1,7 +1,5 @@
-# Datasets
-This folder should contain all the datasets used in the scripts. 
-The datasets should be stored in a folder with the name of the dataset. 
-For example, the folder `datasets/iris` should contain the dataset `iris`.
+# The CPUs Dataset
 
-## Download datasets
-All datasets are available at [https://www.dropbox.com/sh/oas4yru2r9n61hk/AADpRunbqES44W49gx9deRN5a?dl=0](https://www.dropbox.com/sh/oas4yru2r9n61hk/AADpRunbqES44W49gx9deRN5a?dl=0)
+The cpu dataset is available in the MASS R Package and contain a relative performance measure and characteristics of 209 CPUs.
+
+We want to estimate the cpu performance for a particular maximum main memory and cache size.
