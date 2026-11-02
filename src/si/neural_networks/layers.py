@@ -78,5 +78,61 @@ class DenseLayer(Layer):
         self.output = np.dot(input, self.weights) + self.biases
         return self.output
 
+    def backward_propagation(self, output_error: np.ndarray) -> np.ndarray:
+        input_error = np.dot(output_error, self.weights.T)
+        weights_error = np.dot(self.input.T, output_error)
+        bias_error = np.sum(output_error, axis=0, keepdims=True)
+
+        self.weights = self.w_opt.update(self.weights, weights_error)
+        self.biases = self.b_opt.update(self.biases, bias_error)
+        return input_error
+
     def output_shape(self) -> tuple:
         return (self.n_units,)
+
+
+class Dropout(Layer):
+    """
+    Dropout layer
+
+    Parameters
+    ----------
+    probability: float
+        Dropout rate, between 0 and 1
+
+    Estimated parameters
+    --------------------
+    mask: numpy.ndarray
+        Binomial mask used in the last forward pass
+    input: numpy.ndarray
+        Last input received
+    output: numpy.ndarray
+        Last output computed
+    """
+
+    def __init__(self, probability: float):
+        self.probability = probability
+        self._input_shape = None
+        self.mask = None
+        self.input = None
+        self.output = None
+
+    def forward_propagation(self, input: np.ndarray, training: bool = False) -> np.ndarray:
+        self.input = input
+        if not training:
+            self.output = input
+            return self.output
+
+        scaling_factor = 1 / (1 - self.probability)
+        self.mask = np.random.binomial(1, 1 - self.probability, size=input.shape)
+        self.output = input * self.mask * scaling_factor
+        return self.output
+
+    def backward_propagation(self, output_error: np.ndarray) -> np.ndarray:
+        return output_error * self.mask
+
+    def output_shape(self) -> tuple:
+        return self.input_shape()
+
+    def parameters(self) -> int:
+        return 0
